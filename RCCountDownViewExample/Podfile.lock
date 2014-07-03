@@ -1,0 +1,14 @@
+PODS:
+  - RCCountDownView (0.1)
+
+DEPENDENCIES:
+  - RCCountDownView (from `../`)
+
+EXTERNAL SOURCES:
+  RCCountDownView:
+    :path: ../
+
+SPEC CHECKSUMS:
+  RCCountDownView: 063ed032c86d1cf7c3c26cb36078e2ac801f03e3
+
+COCOAPODS: 0.33.1
