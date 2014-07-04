@@ -329,15 +329,29 @@ static NSBundle *_localizationBundle = nil;
     NSString *minutesName = NSLocalizedStringFromTableInBundle(@"m", @"RCCountDownView", _localizationBundle,);
     NSString *secondsName = NSLocalizedStringFromTableInBundle(@"s", @"RCCountDownView", _localizationBundle,);
     
-    NSMutableAttributedString *timeDisplayString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%02lu%@  %02lu%@  %02lu%@", (unsigned long)hours, hoursName, (unsigned long)minutes, minutesName, (unsigned long)seconds, secondsName]];
+    BOOL needAttributedString = YES;
     
-    UIFont *font = [_displayTextFont fontWithSize:_fontSize / 2 - 2];
+    if ( !(hoursName.length || minutesName.length || secondsName.length)) {
+        needAttributedString = NO;
+    }
     
-    [timeDisplayString addAttribute:NSFontAttributeName value:font range:NSMakeRange(2, hoursName.length)];
-    [timeDisplayString addAttribute:NSFontAttributeName value:font range:NSMakeRange(6 + hoursName.length, minutesName.length)];
-    [timeDisplayString addAttribute:NSFontAttributeName value:font range:NSMakeRange(timeDisplayString.length - secondsName.length, secondsName.length)];
+    NSString *timeDisplayString = [NSString stringWithFormat:@"%02lu%@  %02lu%@  %02lu%@", (unsigned long)hours, hoursName, (unsigned long)minutes, minutesName, (unsigned long)seconds, secondsName];
     
-    return timeDisplayString;
+    if ( !needAttributedString) {
+        timeDisplayString = [NSString stringWithFormat:@"%02lu ：%02lu ：%02lu", (unsigned long)hours, (unsigned long)minutes, (unsigned long)seconds];
+    }
+    
+    NSMutableAttributedString *timeDisplayAttributedString = [[NSMutableAttributedString alloc] initWithString:timeDisplayString];
+    
+    if (needAttributedString) {
+        UIFont *font = [_displayTextFont fontWithSize:_fontSize / 2 - 2];
+        
+        [timeDisplayAttributedString addAttribute:NSFontAttributeName value:font range:NSMakeRange(2, hoursName.length)];
+        [timeDisplayAttributedString addAttribute:NSFontAttributeName value:font range:NSMakeRange(6 + hoursName.length, minutesName.length)];
+        [timeDisplayAttributedString addAttribute:NSFontAttributeName value:font range:NSMakeRange(timeDisplayString.length - secondsName.length, secondsName.length)];
+    }
+    
+    return timeDisplayAttributedString;
 }
 
 - (void)_countDown {
